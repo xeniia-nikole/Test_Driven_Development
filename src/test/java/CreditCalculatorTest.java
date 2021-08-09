@@ -5,26 +5,25 @@ import java.util.Random;
 
 class CreditCalculatorTest {
     Random random = new Random();
+
+    final int PERIODLOW = 1;
+    final int PERIODHIGH = 72;
+
+    final int PERCENTLOW = 1;
+    final int PERCENTHIGH = 9;
+
     final int creditSum = random.nextInt();
-
-    final int PERIODLOW = 30;
-    final int PERIODHIGH = 2190;
-
-    final double PERCENTLOW = 5.0;
-    final double PERCENTHIGH = 9.7;
-
-
+    final int creditPercent = random.nextInt(PERCENTHIGH-PERCENTLOW)+PERIODLOW;
+    final int creditPeriod = random.nextInt(PERIODHIGH-PERIODLOW)+PERIODLOW;
 
     @Test
     public void testCalculateMonthlyPayment(){
         CreditCalculator creditCalculator = new CreditCalculator();
-        double creditPercent = PERCENTLOW+(PERCENTHIGH-PERCENTLOW)*random.nextDouble();
-        int creditPeriod = random.nextInt(PERIODHIGH-PERIODLOW)+PERIODLOW;
 
-        double monthPaymentSum =
-                creditCalculator.CalculateMonthlyPayment(creditSum, creditPeriod, creditPercent);
+        int monthPaymentSum =
+                creditCalculator.calculateMonthlyPayment(creditSum, creditPeriod, creditPercent);
 
-        double expected = creditSum*(creditPercent+(creditPercent/(1+creditPercent)*creditPeriod-1));
+        int expected = creditSum * (creditPercent+(creditPercent / (1 + creditPercent) * creditPeriod - 1));
 
         Assertions.assertEquals(expected,monthPaymentSum);
 
@@ -33,13 +32,11 @@ class CreditCalculatorTest {
     @Test
     public void testCalculateRefundAmount(){
         CreditCalculator creditCalculator = new CreditCalculator();
-        double monthPaymentSum = random.nextDouble();
-        int creditPeriod = random.nextInt(PERIODHIGH-PERIODLOW)+PERIODLOW;
 
-        double refundAmount =
-                creditCalculator.CalculateRefundAmount(creditPeriod, monthPaymentSum);
+        int refundAmount =
+                creditCalculator.calculateRefundAmount(creditSum, creditPeriod, creditPercent);
 
-        double expected = creditPeriod*monthPaymentSum;
+        int expected = creditSum + (creditPeriod * creditPercent * creditPeriod) / 100;
 
         Assertions.assertEquals(expected,refundAmount);
     }
@@ -47,11 +44,10 @@ class CreditCalculatorTest {
     @Test
     public void testCalculateOverpayment(){
         CreditCalculator creditCalculator = new CreditCalculator();
-        double refundAmount = random.nextDouble();
 
-        double overpayment = creditCalculator.CalculateOverpayment(refundAmount, creditSum);
+        int overpayment = creditCalculator.calculateOverpayment(creditSum, creditPeriod, creditPercent);
 
-        double expected = refundAmount - creditSum;
+        int expected = (creditSum * creditPercent * creditPeriod) / 100;
 
         Assertions.assertEquals(expected,overpayment);
     }

@@ -1,17 +1,17 @@
 public class CreditCalculator {
 
 
-    public double CalculateMonthlyPayment(int creditSum, int creditPeriod, double creditPercent) {
-        return creditSum * (creditPercent + (creditPercent / (1 + creditPercent) * creditPeriod - 1));
+    public int calculateMonthlyPayment(int creditSum, int creditPeriod, int creditPercent) {
+        return (creditSum + (creditSum * creditPercent * creditPeriod) / 100) / (creditPeriod * 12);
     }
 
 
-    public double CalculateRefundAmount(int creditPeriod, double monthPaymentSum) {
-        return creditPeriod * monthPaymentSum;
+    public int calculateRefundAmount(int creditSum, int creditPeriod, int creditPercent) {
+        return creditSum + (creditPeriod * creditPercent * creditPeriod) / 100;
     }
 
 
-    public double CalculateOverpayment(double refundAmount, int creditSum) {
-        return refundAmount - creditSum;
+    public int calculateOverpayment(int creditSum, int creditPeriod, int creditPercent) {
+        return (creditSum * creditPercent * creditPeriod) / 100;
     }
 }
